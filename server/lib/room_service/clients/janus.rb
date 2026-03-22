@@ -13,6 +13,7 @@ module RoomService
         base_url: ENV.fetch("JANUS_HTTP_URL", "").chomp("/"),
         api_secret: ENV.fetch("JANUS_API_SECRET", "")
       )
+        warn "Base URL: #{base_url}"
         @base_url = base_url
         @api_secret = api_secret
         @internet = nil
@@ -40,7 +41,7 @@ module RoomService
         body = JSON.dump(payload)
         resp = internet.post(url, headers, body)
 
-        unless resp.status.success?
+        unless (200..299).include?(resp.status)
           raise RoomService::Errors::JanusError, "HTTP error: #{resp.status}"
         end
 
@@ -55,7 +56,7 @@ module RoomService
 
       def get(url)
         resp = internet.get(url)
-        unless resp.status.sucess?
+        unless resp.status.success?
           raise RoomService::Errors::JanusError, "HTTP error: #{resp.status}"
         end
 
@@ -109,7 +110,7 @@ module RoomService
         session_id = create_janus_session
 
         begin
-          plugin_handle = attach_plugin_handle(session_id, VIDEO_ROOM_PLUGIN)
+          plugin_handle = attach_plugin_handle(session_id, "janus.plugin.videoroom")
 
           payload = {
             "janus" => "message",
@@ -146,7 +147,7 @@ module RoomService
         session_id = create_janus_session
 
         begin
-          plugin_handle = attach_plugin_handle(session_id, VIDEO_ROOM_PLUGIN)
+          plugin_handle = attach_plugin_handle(session_id, "janus.plugin.videoroom")
           janus_room_id = generate_janus_room_id
 
           payload = {
@@ -166,6 +167,43 @@ module RoomService
         end
       end
 
+      def list_janus_rooms
+        session_id = create_janus_session
+        handle_id = attach_plugin_handle(session_id, "janus.plugin.videoroom")
+
+        data = post(
+          "#{@base_url}/#{session_id}/#{handle_id}",
+          {
+            janus: "message",
+            body: {
+              request: "list"
+            },
+            transaction: generate_tx_id,
+            apisecret: @api_secret
+          }
+        )
+
+        data.dig("plugindata", "data", "list") || []
+      end
+
+      def destroy_janus_room(janus_room_id, permanent: false)
+        session_id = create_janus_session
+        handle_id = attach_plugin_handle(session_id, "janus.plugin.videoroom")
+
+        post(
+          "#{@base_url}/#{session_id}/#{handle_id}",
+          {
+            janus: "message",
+            body: {
+              request: "destroy",
+              room: janus_room_id,
+              permanent: permanent
+            },
+            transaction: generate_tx_id,
+            apisecret: @api_secret
+          }
+        )
+      end
     end
   end
 end

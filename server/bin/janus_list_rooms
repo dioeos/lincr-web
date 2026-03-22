@@ -1,0 +1,22 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "dotenv"
+env_path = File.expand_path("../lib/.env", __dir__)
+Dotenv.load(env_path)
+require "roda"
+require_relative "../lib/room_service/boot"
+
+Async do
+  client = RoomService::Clients::JanusClient.new
+  rooms = client.list_janus_rooms
+
+  if rooms.empty?
+    puts "No active rooms."
+    exit 0
+  end
+
+  rooms.each do |room|
+    puts "room=#{room['room']} description=#{room['description']}"
+  end
+end

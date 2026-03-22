@@ -1,1 +1,6 @@
+require_relative "errors/janus_error"
+require_relative "errors/room_creation_error"
+require_relative "models/app_room"
+require_relative "clients/janus"
+require_relative "services/room_manager"
 require_relative "routes"

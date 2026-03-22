@@ -1,0 +1,21 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "roda"
+require "dotenv"
+require_relative "../lib/room_service/boot"
+Dotenv.load(File.expand_path("../.env", __dir__))
+
+room_id = ARGV[0]
+
+Async do
+  if room_id.nil?
+    warn "Usage: bin/janus_destroy_room ROOM_ID"
+    exit 1
+  end
+
+  client = RoomService::Clients::JanusClient.new
+  client.destroy_janus_room(room_id.to_i)
+
+  puts "Destroyed room #{room_id}"
+end
