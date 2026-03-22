@@ -1,0 +1,9 @@
+services:
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile.dev
+    container_name: lincr_server
+    ports:
+      - "9000:9000"
+    command: ["sh", "./dev-start.sh"]

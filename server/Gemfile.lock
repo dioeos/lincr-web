@@ -64,7 +64,9 @@ GEM
     io-event (1.14.3)
     io-stream (0.11.1)
     json (2.19.2)
+    language_server-protocol (3.17.0.5)
     localhost (1.7.0)
+    logger (1.7.0)
     mapping (1.1.3)
     memory (0.12.0)
       bake (~> 0.15)
@@ -75,6 +77,7 @@ GEM
     metrics (0.15.0)
     msgpack (1.8.0)
     openssl (4.0.1)
+    prism (1.9.0)
     process-metrics (0.11.0)
       console (~> 1.8)
       json (~> 2)
@@ -93,6 +96,10 @@ GEM
     rack (3.2.5)
     rack-test (2.2.0)
       rack (>= 1.3)
+    rbs (4.0.0)
+      logger
+      prism (>= 1.6.0)
+      tsort
     roda (3.102.0)
       rack
     rspec (3.13.2)
@@ -108,11 +115,16 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
     rspec-support (3.13.7)
+    ruby-lsp (0.26.8)
+      language_server-protocol (~> 3.17.0)
+      prism (>= 1.2, < 2.0)
+      rbs (>= 3, < 5)
     samovar (2.4.1)
       console (~> 1.0)
       mapping (~> 1.0)
     string-format (0.2.0)
     traces (0.18.2)
+    tsort (0.2.0)
 
 PLATFORMS
   ruby
@@ -124,6 +136,7 @@ DEPENDENCIES
   rack-test
   roda
   rspec
+  ruby-lsp
 
 CHECKSUMS
   async (2.37.0) sha256=e9d4b71f3509b44a3d2a19958101bf158dba975ba49a64a6934c8f0340ed989f
@@ -145,13 +158,16 @@ CHECKSUMS
   io-event (1.14.3) sha256=c15cbbdd3b1cbf65bb87153a4c5bbc6d7dc07a357f6154601d5290f39ab2ac06
   io-stream (0.11.1) sha256=fa5f551fcff99581c1757b9d1cee2c37b124f07d2ca4f40b756a05ab9bd21b87
   json (2.19.2) sha256=e7e1bd318b2c37c4ceee2444841c86539bc462e81f40d134cf97826cb14e83cf
+  language_server-protocol (3.17.0.5) sha256=fd1e39a51a28bf3eec959379985a72e296e9f9acfce46f6a79d31ca8760803cc
   localhost (1.7.0) sha256=09b32819537f914ccdf0a7c595fab162517401b6ef644a2afd3708d943c4547f
+  logger (1.7.0) sha256=196edec7cc44b66cfb40f9755ce11b392f21f7967696af15d274dde7edff0203
   mapping (1.1.3) sha256=2274931d20ecd46eaafdd1e00c58cc7472133b213bcac335cc7733d3c75f4da2
   memory (0.12.0) sha256=786a14d84cec8e5667a491da02ebbf492b9ec3d19d35161131ac9d47abb684b4
   memory-leak (0.10.3) sha256=6874744ed6abc153feeb901118fa5848e7b5883e1c58cbe6cc0b5431f9001a45
   metrics (0.15.0) sha256=61ded5bac95118e995b1bc9ed4a5f19bc9814928a312a85b200abbdac9039072
   msgpack (1.8.0) sha256=e64ce0212000d016809f5048b48eb3a65ffb169db22238fb4b72472fecb2d732
   openssl (4.0.1) sha256=e27974136b7b02894a1bce46c5397ee889afafe704a839446b54dc81cb9c5f7d
+  prism (1.9.0) sha256=7b530c6a9f92c24300014919c9dcbc055bf4cdf51ec30aed099b06cd6674ef85
   process-metrics (0.11.0) sha256=69f1602c94e33760e9549173ebf45047d762fe913ba43c135dae3641a2d617fc
   protocol-hpack (1.5.1) sha256=6feca238b8078da1cd295677d6f306c6001af92d75fe0643d33e6956cbc3ad91
   protocol-http (0.59.0) sha256=90e20ad817cb3ffe947d4fd6194fe0651f385625dcce055386d1c356ee32547b
@@ -161,15 +177,18 @@ CHECKSUMS
   protocol-url (0.4.0) sha256=64d4c03b6b51ad815ac6fdaf77a1d91e5baf9220d26becb846c5459dacdea9e1
   rack (3.2.5) sha256=4cbd0974c0b79f7a139b4812004a62e4c60b145cba76422e288ee670601ed6d3
   rack-test (2.2.0) sha256=005a36692c306ac0b4a9350355ee080fd09ddef1148a5f8b2ac636c720f5c463
+  rbs (4.0.0) sha256=b700e75a8ea721a66b94c4e3af7df26d1e61a786d1205d0b8de93828718c4771
   roda (3.102.0) sha256=b2156fff6d2b1b52bfac39e4ccde0d820a26594f069c3d9e99cc0853f7ee7dcc
   rspec (3.13.2) sha256=206284a08ad798e61f86d7ca3e376718d52c0bc944626b2349266f239f820587
   rspec-core (3.13.6) sha256=a8823c6411667b60a8bca135364351dda34cd55e44ff94c4be4633b37d828b2d
   rspec-expectations (3.13.5) sha256=33a4d3a1d95060aea4c94e9f237030a8f9eae5615e9bd85718fe3a09e4b58836
   rspec-mocks (3.13.8) sha256=086ad3d3d17533f4237643de0b5c42f04b66348c28bf6b9c2d3f4a3b01af1d47
   rspec-support (3.13.7) sha256=0640e5570872aafefd79867901deeeeb40b0c9875a36b983d85f54fb7381c47c
+  ruby-lsp (0.26.8) sha256=fa607c342736c6ea791c945ae05025bc306ef9dd72c640b0b660478c5832f968
   samovar (2.4.1) sha256=c3b91dd0580771e3bc600621c1111f29542529dcffafaac3b6bf068b3f309e80
   string-format (0.2.0) sha256=bc981c14116b061f12134549f32fa2d61a17b5a35dd6fd36596c21722a789af6
   traces (0.18.2) sha256=80f1649cb4daace1d7174b81f3b3b7427af0b93047759ba349960cb8f315e214
+  tsort (0.2.0) sha256=9650a793f6859a43b6641671278f79cfead60ac714148aabe4e3f0060480089f
 
 BUNDLED WITH
   4.0.8
