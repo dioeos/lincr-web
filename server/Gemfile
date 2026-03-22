@@ -13,4 +13,5 @@ end
 
 group :development do
   gem "ruby-lsp", require: false
+  gem "io-watch"
 end
