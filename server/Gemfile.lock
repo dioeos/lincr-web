@@ -43,6 +43,7 @@ GEM
       fiber-local (~> 1.1)
       json
     diff-lcs (1.6.2)
+    dotenv (3.2.0)
     falcon (0.54.3)
       async
       async-container (~> 0.20)
@@ -133,6 +134,8 @@ PLATFORMS
 
 DEPENDENCIES
   async
+  async-http (~> 0.94.2)
+  dotenv
   falcon
   io-watch
   rack-test
@@ -152,6 +155,7 @@ CHECKSUMS
   bigdecimal (4.0.1) sha256=8b07d3d065a9f921c80ceaea7c9d4ae596697295b584c296fe599dd0ad01c4a7
   console (1.34.3) sha256=869fbd74697efc4c606f102d2812b0b008e4e7fd738a91c591e8577140ec0dcc
   diff-lcs (1.6.2) sha256=9ae0d2cba7d4df3075fe8cd8602a8604993efc0dfa934cff568969efb1909962
+  dotenv (3.2.0) sha256=e375b83121ea7ca4ce20f214740076129ab8514cd81378161f11c03853fe619d
   falcon (0.54.3) sha256=18f0ee921c36b68ddb18d68b2203ceaed4089db7c75266d1e003c08546076c90
   fiber-annotation (0.2.0) sha256=7abfadf1d119f508867d4103bf231c0354d019cc39a5738945dec2edadaf6c03
   fiber-local (1.1.0) sha256=c885f94f210fb9b05737de65d511136ea602e00c5105953748aa0f8793489f06
