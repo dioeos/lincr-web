@@ -60,3 +60,14 @@ services:
       timeout: 3s
       retries: 20
       start_period: 15s
+
+  nginx:
+    container_name: lincr-nginx
+    build:
+      context: ./services/nginx
+      dockerfile: Dockerfile.dev
+    ports:
+      - 80:80
+    depends_on:
+      - server
+      - client
