@@ -1,0 +1,6 @@
+/.idea/janus-webrtc-gateway-docker.iml
+/.idea/modules.xml
+/.idea/vcs.xml
+/.idea/
+janus.admin.secret.jcfg
+.env

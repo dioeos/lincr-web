@@ -21,3 +21,40 @@ services:
     volumes:
       - ./client:/app
       - /app/node_modules
+
+  janus-gateway:
+    container_name: lincr-janus-gateway
+    image: "sucwangsr/janus-webrtc-gateway-docker:latest"
+    env_file:
+      - ./services/janus/.env
+    build:
+      context: ./services/janus
+      dockerfile: Dockerfile.dev
+    command: [
+        "sh",
+        "-c",
+        "nginx && exec /usr/local/bin/janus \
+        --apisecret=$$JANUS_API_SECRET \
+        -F /usr/local/etc/janus",
+      ]
+    # network_mode: "host"
+    volumes:
+      - "./services/janus/conf/janus.transport.http.jcfg:/usr/local/etc/janus/janus.transport.http.jcfg"
+      - "./services/janus/conf/janus.jcfg:/usr/local/etc/janus/janus.jcfg"
+      - "./services/janus/conf/janus.eventhandler.sampleevh.jcfg:/usr/local/etc/janus/janus.eventhandler.sampleevh.jcfg"
+      - "./services/janus/conf/janus.admin.secret.jcfg:/usr/local/etc/janus/janus.admin.secret.jcfg"
+    restart: always
+    ports:
+      - "8088:8088" #HTTP Webserver
+      - "8188:8188" #Websockets
+      - "8000:8000" #NGINX
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'wget -qO- http://127.0.0.1:8088/janus/info | grep -q ''"janus"''',
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 15s
