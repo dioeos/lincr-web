@@ -7,3 +7,17 @@ services:
     ports:
       - "9000:9000"
     command: ["sh", "./dev-start.sh"]
+    volumes:
+      - ./server:/app
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile.dev
+    container_name: lincr_client
+    ports:
+      - "5173:5173"
+    command: ["sh", "./dev-start.sh"]
+    volumes:
+      - ./client:/app
+      - /app/node_modules
