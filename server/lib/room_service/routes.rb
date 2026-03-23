@@ -6,7 +6,7 @@ module RoomService
       route do |r|
         r.on "rooms" do
           r.get "hello" do
-            "hello!" 
+            { data: "hello" }
           end
 
           # POST /rooms/create

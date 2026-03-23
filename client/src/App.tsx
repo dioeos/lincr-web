@@ -1,7 +1,12 @@
 import "./App.css";
+import Index from "./pages/Index/Index";
 
 function App() {
-  return <div className="text-red-500">hello</div>;
+  return (
+    <>
+      <Index />
+    </>
+  );
 }
 
 export default App;
