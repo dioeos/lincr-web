@@ -1,9 +1,36 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "Geist Black";
+  src: url("../public/Geist-Black.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Geist";
+  src: url("../public/Geist-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Geist Light";
+  src: url("../public/Geist-ExtraLight.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme {
   --color-snow: #fff;
   --color-error-red: #ed4337;
   --color-future-blue: #0b468c;
   --color-future-stone: #575267;
   --color-dark-blue: #092047;
+  --font-geist-black: "Geist Black";
+  --font-geist-light: "Geist Light";
+  --font-geist: "Geist";
 }
