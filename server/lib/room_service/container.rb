@@ -22,6 +22,12 @@ module RoomService
       )
     end
 
+    def get_room_service
+      @get_room_service ||= Services::GetRoom.new(
+        room_repo: room_repo
+      )
+    end
+
     def destroy_room_service
       @destroy_room_service ||= Services::DestroyRoom.new(
         room_repo: room_repo,
@@ -38,6 +44,7 @@ module RoomService
     def room_manager
       @room_manager ||= Managers::RoomManager.new(
         create_room_service: create_room_service,
+        get_room_service: get_room_service,
         destroy_room_service: destroy_room_service,
         list_rooms_service: list_rooms_service
       )
