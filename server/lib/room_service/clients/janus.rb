@@ -184,6 +184,8 @@ module RoomService
         )
 
         data.dig("plugindata", "data", "list") || []
+      ensure
+        destroy_janus_session(session_id)
       end
 
       def destroy_janus_room(janus_room_id, permanent: false)
@@ -203,6 +205,8 @@ module RoomService
             apisecret: @api_secret
           }
         )
+      ensure
+        destroy_janus_session(session_id)
       end
     end
   end
