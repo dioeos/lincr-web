@@ -1,28 +1,46 @@
+require "dotenv/load"
+require "redis"
+
+REDIS_URL = ENV["REDIS_URL"]
+warn REDIS_URL
+
 module RoomService
   module Repositories
     class RoomRepository
-      def initialize
-        @rooms = {}
+      def initialize(redis: Redis.new(url: REDIS_URL))
+        @redis = redis
       end
 
       def save(room)
-        @rooms[room.room_code] = room
+        # room_code -> janus_room_id
+        @redis.hset("rooms", room.room_code, room.janus_room_id)
       end
 
-      def find_by_code(room_code)
-        @rooms[room_code]
+      def find(room_code)
+        id = @redis.hget("rooms", room_code)
+        return nil unless id
+
+        Models::AppRoom.new(
+          room_code: room_code,
+          janus_room_id: id
+        )
       end
 
-      def delete(room)
-        @rooms.delete(room_code)
+      def delete(room_code)
+        @redis.hdel("rooms", room_code)
       end
 
       def all
-        @rooms.values
+        @redis.hgetall("rooms").map do |code, id|
+          Models::AppRoom.new(
+            room_code: code,
+            janus_room_id: id
+          )
+        end
       end
 
       def exists?(room_code)
-        @rooms.key?(room_code)
+        @redis.hexists("rooms", room_code)
       end
     end
   end 

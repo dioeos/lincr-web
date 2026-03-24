@@ -25,7 +25,7 @@ services:
       - /app/node_modules
 
   janus-gateway:
-    container_name: lincr-janus-gateway
+    container_name: lincr_janus_gateway
     image: "sucwangsr/janus-webrtc-gateway-docker:latest"
     env_file:
       - ./services/janus/.env
@@ -62,7 +62,7 @@ services:
       start_period: 15s
 
   nginx:
-    container_name: lincr-nginx
+    container_name: lincr_nginx
     build:
       context: ./services/nginx
       dockerfile: Dockerfile.dev
@@ -71,3 +71,14 @@ services:
     depends_on:
       - server
       - client
+
+  redis:
+    container_name: lincr_redis
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    command: redis-server --save "" --appendonly no
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      retries: 10

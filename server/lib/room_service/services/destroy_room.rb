@@ -7,7 +7,7 @@ module RoomService
       end
 
       def call(room_code)
-        room = @room_repo.find_by_code(room_code)
+        room = @room_repo.find(room_code)
 
         raise Errors::RoomNotFoundError, "Room #{room_code} not found" if room.nil?
 

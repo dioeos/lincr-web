@@ -17,4 +17,4 @@ gem "roda"
 gem "falcon"
 gem "async"
 gem "async-http", "~> 0.94.2"
-
+gem "redis", "~> 5.4"
