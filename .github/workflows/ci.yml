@@ -9,23 +9,29 @@ jobs:
   rspec-tests:
     name: Ruby Roda Tests
     runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: server
+
     env:
       REDIS_URL: redis://localhost:6379
+
     services:
       redis:
         image: redis:7-alpine
         ports:
-          - "6379:6379"
+          - 6379:6379
+
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: server/.ruby-version
           bundler-cache: true
+          working-directory: server
 
       - name: Run tests
-        working-directory: server
         run: bundle exec rspec
