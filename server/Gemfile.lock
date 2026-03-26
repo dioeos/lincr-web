@@ -143,6 +143,7 @@ DEPENDENCIES
   dotenv
   falcon
   io-watch
+  rack (~> 3.2)
   rack-test
   redis (~> 5.4)
   roda

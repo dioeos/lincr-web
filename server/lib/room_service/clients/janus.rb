@@ -13,7 +13,6 @@ module RoomService
         base_url: ENV.fetch("JANUS_HTTP_URL", "").chomp("/"),
         api_secret: ENV.fetch("JANUS_API_SECRET", "")
       )
-        warn "Base URL: #{base_url}"
         @base_url = base_url
         @api_secret = api_secret
         @internet = nil
