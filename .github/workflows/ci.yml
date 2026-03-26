@@ -9,9 +9,6 @@ jobs:
   rspec-tests:
     name: Ruby Roda Tests
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: server
     env:
       REDIS_URL: redis://localhost:6379
     services:
@@ -26,7 +23,9 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
+          ruby-version: .ruby-version
           bundler-cache: true
 
       - name: Run tests
+        working-directory: server
         run: bundle exec rspec
