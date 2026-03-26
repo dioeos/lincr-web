@@ -1,0 +1,30 @@
+name: Continuous Integration (DEV)
+
+on:
+  workflow_dispatch:
+  push: {}
+  pull_request: {}
+
+jobs:
+  rspec-tests:
+    name: Ruby Roda Tests
+    runs-on: ubuntu-latest
+    working-directory: server
+    env:
+      REDIS_URL: redis://localhost:6379
+    services:
+      redis:
+        image: redis:7-alpine
+        ports:
+          - "6379:6379"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Run tests
+        run: bundle exec rspec
