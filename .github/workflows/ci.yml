@@ -9,7 +9,9 @@ jobs:
   rspec-tests:
     name: Ruby Roda Tests
     runs-on: ubuntu-latest
-    working-directory: server
+    defaults:
+      run:
+        working-directory: server
     env:
       REDIS_URL: redis://localhost:6379
     services:
