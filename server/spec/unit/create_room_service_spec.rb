@@ -34,19 +34,19 @@ describe RoomService::Services::CreateRoom do
     end
 
     it "retries when a generated code already exists" do
-      allow(fake_cg).to receive(:call).and_return("TAKEN1", "FREE22")
-      allow(fake_repo).to receive(:exists?).with("TAKEN1").and_return(true)
-      allow(fake_repo).to receive(:exists?).with("FREE22").and_return(false)
+      allow(fake_cg).to receive(:call).and_return("TAKEN11", "FREE222")
+      allow(fake_repo).to receive(:exists?).with("TAKEN11").and_return(true)
+      allow(fake_repo).to receive(:exists?).with("FREE222").and_return(false)
       allow(fake_janus).to receive(:create_janus_room).and_return(12345)
       allow(fake_repo).to receive(:save)
 
       room = service.call
 
-      expect(room.room_code).to eq("FREE22")
+      expect(room.room_code).to eq("FREE222")
       expect(room.janus_room_id).to eq(12345)
       expect(fake_cg).to have_received(:call).twice
-      expect(fake_repo).to have_received(:exists?).with("TAKEN1")
-      expect(fake_repo).to have_received(:exists?).with("FREE22")
+      expect(fake_repo).to have_received(:exists?).with("TAKEN11")
+      expect(fake_repo).to have_received(:exists?).with("FREE222")
       expect(fake_repo).to have_received(:save).with(room)
     end
 
