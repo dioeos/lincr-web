@@ -22,7 +22,7 @@ module RoomService
 
         Models::AppRoom.new(
           room_code: room_code,
-          janus_room_id: id
+          janus_room_id: Integer(id, 10)
         )
       end
 

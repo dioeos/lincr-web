@@ -21,4 +21,25 @@ RSpec.describe "Get", type: :request do
       )
     end
   end
+
+  describe "GET /rooms/:room_code" do
+    it "returns the requested room as JSON" do
+      repo = RoomService::Repositories::RoomRepository.new
+      room = RoomService::Models::AppRoom.new(
+          room_code: "BCD1234",
+          janus_room_id: 6789
+      )
+      repo.save(room)
+      get "/api/v1/rooms/BCD1234"
+
+      expect(last_response.status).to eq(200)
+      json = JSON.parse(last_response.body)
+      expect(json).to eq(
+        {
+          "room_code" => "BCD1234",
+          "janus_room_id" => 6789
+        }
+      )
+    end
+  end
 end
