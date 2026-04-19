@@ -40,7 +40,7 @@ module RoomService
         body = JSON.dump(payload)
         resp = internet.post(url, headers, body)
 
-        unless (200..299).include?(resp.status)
+        unless resp.status.success?
           raise RoomService::Errors::JanusError, "HTTP error: #{resp.status}"
         end
 
