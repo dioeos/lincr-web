@@ -34,7 +34,7 @@ module RoomService
         @redis.hgetall("rooms").map do |code, id|
           Models::AppRoom.new(
             room_code: code,
-            janus_room_id: id
+            janus_room_id: Integer(id, 10)
           )
         end
       end
