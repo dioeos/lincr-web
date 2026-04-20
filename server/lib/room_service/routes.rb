@@ -2,11 +2,19 @@ module RoomService
   module Routes
     class RoomRoutes < Roda
       plugin :json
+
+      class << self
+        attr_writer :manager
+
+        def manager
+          @manager ||= Container.room_manager
+        end
+      end
+
       route do |r|
-        manager = Container.room_manager
         # POST /rooms/create
         r.post "create" do
-          room = manager.create_room
+          room = self.class.manager.create_room
           response.status = 201
           {
             room_code: room.room_code,
@@ -19,7 +27,19 @@ module RoomService
 
         # POST /rooms/delete/:room_code
         r.post "delete", String do |room_code|
-          manager.destroy_room(room_code)
+          result = RoomService::Validation::RoomCodeSchema.call(room_code: room_code)
+
+          unless result.success?
+            r.response.status = 422
+            next({
+              error: {
+                type: "Validation Error",
+                fields: result.errors.to_h
+              }
+            })
+          end
+
+          self.class.manager.destroy_room(room_code)
           response.status = 200
           {
             message: "Room #{room_code} deleted"
@@ -31,7 +51,7 @@ module RoomService
 
         # GET /rooms/list
         r.get "list" do
-          rooms = manager.list_rooms
+          rooms = self.class.manager.list_rooms
           response.status = 200
           { rooms: rooms.map(&:to_h) }
         end
@@ -39,7 +59,7 @@ module RoomService
         r.on String do |room_code|
           # GET /rooms/:room_code
           r.get true do
-            room = manager.get_room(room_code)
+            room = self.class.manager.get_room(room_code)
             room.to_h
           rescue Errors::RoomNotFoundError => e
             r.response.status = 404

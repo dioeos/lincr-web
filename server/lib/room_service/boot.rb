@@ -1,5 +1,6 @@
 require_relative "errors/errors"
 require_relative "models/app_room"
+require_relative "schemas/schemas"
 require_relative "repositories/room_repository"
 require_relative "utils/code_generator"
 require_relative "clients/janus"
