@@ -49,7 +49,7 @@ describe RoomService::Services::DestroyRoom do
       allow(fake_repo).to receive(:delete)
       expect do
         service.call(room_code)
-      end.to raise_error(RoomService::Errors::JanusError, "Janus destroy failed")
+      end.to raise_error(RoomService::Errors::RoomDeletionError, "Failed to delete room: Janus destroy failed")
       expect(fake_repo).not_to have_received(:delete)
     end
   end
