@@ -26,7 +26,7 @@ RSpec.describe "Post", type: :request do
 
     after do
     destroy_service.instance_variable_set(:@janus_client, @original_janus_client)
-    destroy_service.instance_variable_set(:@repo, @repo)
+    destroy_service.instance_variable_set(:@room_repo, @original_room_repo)
     end
 
     it "deletes the requested room" do

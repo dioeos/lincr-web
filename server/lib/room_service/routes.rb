@@ -2,8 +2,8 @@ module RoomService
   module Routes
     class RoomRoutes < Roda
       plugin :json
-      manager = Container.room_manager
       route do |r|
+        manager = Container.room_manager
         # POST /rooms/create
         r.post "create" do
           room = manager.create_room
@@ -15,6 +15,18 @@ module RoomService
         rescue Errors::RoomCreationError => e
           response.status = 502
           { error: e.message}
+        end
+
+        # POST /rooms/delete/:room_code
+        r.post "delete", String do |room_code|
+          manager.destroy_room(room_code)
+          response.status = 200
+          {
+            message: "Room #{room_code} deleted"
+          }
+        rescue Errors::RoomNotFoundError => e
+          r.response.status = 404
+          { error: e.message }
         end
 
         # GET /rooms/list
