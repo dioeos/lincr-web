@@ -41,8 +41,35 @@ RSpec.describe "Post", type: :request do
       expect(json["janus_room_id"]).to eq(4646)
       expect(fake_janus).to have_received(:create_janus_room)
     end
-  end
 
+    it "returns 502 on RoomCreationError due to JanusError rescue" do
+      allow(fake_janus)
+        .to receive(:create_janus_room)
+        .and_raise(RoomService::Errors::JanusError, "Failed to create Janus room")
+      post "/api/v1/rooms/create"
+      expect(last_response.status).to eq(502)
+      json = JSON.parse(last_response.body)
+      expect(json["error"]).to eq("Failed to create room: Failed to create Janus room")
+      expect(fake_janus).to have_received(:create_janus_room)
+    end
+
+    it "returns 502 on RoomCreationError due to RedisError rescue" do
+      allow(fake_janus)
+        .to receive(:create_janus_room)
+        .and_return(5050)
+
+      allow(repo)
+        .to receive(:save)
+        .and_raise(RoomService::Errors::RedisError, "Failed to save room in repository")
+      post "/api/v1/rooms/create"
+      expect(last_response.status).to eq(502)
+      json = JSON.parse(last_response.body)
+      expect(json["error"]).to eq("Failed to create room: Failed to save room in repository")
+      expect(fake_janus).to have_received(:create_janus_room)
+      expect(repo).to have_received(:save)
+    end
+      
+  end
 
   describe "POST /rooms/delete/:room_code" do
     let(:fake_janus) do
