@@ -31,7 +31,11 @@ module RoomService
       end
 
       def delete(room_code)
-        @redis.hdel("rooms", room_code)
+        begin
+          @redis.hdel("rooms", room_code)
+        rescue Redis::BaseError => e
+          raise Errors::RedisError, "Failed to delete room from repository: #{e.message}"
+        end
       end
 
       def all
