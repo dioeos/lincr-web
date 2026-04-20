@@ -7,7 +7,7 @@ RSpec.describe "Post", type: :request do
     end
 
     let(:repo) do
-    RoomService::Repositories::RoomRepository.new
+      RoomService::Repositories::RoomRepository.new
     end
 
     let(:destroy_service) do
@@ -25,8 +25,8 @@ RSpec.describe "Post", type: :request do
     end
 
     after do
-    destroy_service.instance_variable_set(:@janus_client, @original_janus_client)
-    destroy_service.instance_variable_set(:@room_repo, @original_room_repo)
+      destroy_service.instance_variable_set(:@janus_client, @original_janus_client)
+      destroy_service.instance_variable_set(:@room_repo, @original_room_repo)
     end
 
     it "deletes the requested room" do
@@ -61,6 +61,17 @@ RSpec.describe "Post", type: :request do
       expect(json).to eq(
         "error" => "Room KOI1234 not found"
       )
+    end
+
+    it "invalid data payload returns validation error JSON" do
+      manager = RoomService::Routes::RoomRoutes.manager
+      allow(manager).to receive(:destroy_room)
+      post "/api/v1/rooms/delete/SHORT"
+      expect(last_response.status).to eq(422)
+      json = JSON.parse(last_response.body)
+      expect(json["error"]["type"]).to eq("Validation Error")
+      expect(json["error"]["fields"]).to include("room_code")
+      expect(manager).not_to have_received(:destroy_room)
     end
   end
 end
