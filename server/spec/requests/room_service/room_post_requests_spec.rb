@@ -1,6 +1,49 @@
 require_relative "../../spec_helper"
 
 RSpec.describe "Post", type: :request do
+  describe "POST /rooms/create" do
+    let(:fake_janus) do
+      instance_double(RoomService::Clients::JanusClient)
+    end
+
+    let(:repo) do
+      RoomService::Repositories::RoomRepository.new
+    end
+
+    let(:create_service) do
+      RoomService::Container
+        .room_manager
+        .instance_variable_get(:@create_room_service)
+    end
+
+    before do
+      @original_janus_client = create_service.instance_variable_get(:@janus_client)
+      @original_room_repo = create_service.instance_variable_get(:@room_repo)
+      create_service.instance_variable_set(:@janus_client, fake_janus)
+      create_service.instance_variable_set(:@room_repo, repo)
+    end
+
+    after do
+      create_service.instance_variable_set(:@janus_client, @original_janus_client)
+      create_service.instance_variable_set(:@room_repo, @original_room_repo)
+    end
+
+
+    it "returns successful create JSON on valid request" do
+      allow(fake_janus)
+        .to receive(:create_janus_room)
+        .and_return(4646)
+
+      post "/api/v1/rooms/create"
+      expect(last_response.status).to eq(201)
+      json = JSON.parse(last_response.body)
+      expect(json["room_code"]).not_to be_empty
+      expect(json["janus_room_id"]).to eq(4646)
+      expect(fake_janus).to have_received(:create_janus_room)
+    end
+  end
+
+
   describe "POST /rooms/delete/:room_code" do
     let(:fake_janus) do
       instance_double(RoomService::Clients::JanusClient)
