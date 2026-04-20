@@ -13,7 +13,11 @@ module RoomService
 
       def save(room)
         # room_code -> janus_room_id
-        @redis.hset("rooms", room.room_code, room.janus_room_id)
+        begin
+          @redis.hset("rooms", room.room_code, room.janus_room_id)
+        rescue Redis::BaseError => e
+          raise Errors::RedisError, "Failed to save room in repository: #{e.message}"
+        end
       end
 
       def find(room_code)

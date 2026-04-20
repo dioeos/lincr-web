@@ -3,5 +3,6 @@ module RoomService
     class JanusError < StandardError; end
     class RoomCreationError < StandardError; end
     class RoomNotFoundError < StandardError; end
+    class RedisError < StandardError; end
   end
 end

@@ -19,6 +19,8 @@ module RoomService
         room
       rescue Errors::JanusError => e
         raise Errors::RoomCreationError, "Failed to create room: #{e.message}"
+      rescue Errors::RedisError => e
+        raise Errors::RoomCreationError, "Failed to create room: #{e.message}"
       end
 
       private
