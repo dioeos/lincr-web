@@ -13,6 +13,10 @@ module RoomService
 
         @janus_client.destroy_janus_room(room.janus_room_id)
         @room_repo.delete(room_code)
+      rescue Errors::JanusError => e
+        raise Errors::RoomDeletionError, "Failed to delete room: #{e.message}"
+      rescue Errors::RedisError => e
+        raise Errors::RoomDeletionError, "Failed to delete room: #{e.message}"
       end
     end
   end

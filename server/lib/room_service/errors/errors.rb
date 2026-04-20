@@ -4,5 +4,6 @@ module RoomService
     class RoomCreationError < StandardError; end
     class RoomNotFoundError < StandardError; end
     class RedisError < StandardError; end
+    class RoomDeletionError < StandardError; end
   end
 end

@@ -47,6 +47,9 @@ module RoomService
         rescue Errors::RoomNotFoundError => e
           r.response.status = 404
           { error: e.message }
+        rescue Errors::RoomDeletionError => e
+          r.responsestatus = 502
+          { error: e.message }
         end
 
         # GET /rooms/list
