@@ -48,7 +48,7 @@ module RoomService
           r.response.status = 404
           { error: e.message }
         rescue Errors::RoomDeletionError => e
-          r.responsestatus = 502
+          r.response.status = 502
           { error: e.message }
         end
 

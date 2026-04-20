@@ -129,6 +129,45 @@ RSpec.describe "Post", type: :request do
       expect(json["error"]).to eq("Room KOI1234 not found")
     end
 
+    it "returns 502 on RoomDeletionError due to JanusError rescue" do
+      room = RoomService::Models::AppRoom.new(
+        room_code: "KUJ1234",
+        janus_room_id: 9090
+      )
+      repo.save(room)
+      allow(fake_janus)
+        .to receive(:destroy_janus_room)
+        .with(9090)
+        .and_raise(RoomService::Errors::JanusError, "Failed to destroy Janus room")
+
+      post "/api/v1/rooms/delete/KUJ1234"
+      expect(last_response.status).to eq(502)
+      json = JSON.parse(last_response.body)
+      expect(json["error"]).to eq("Failed to delete room: Failed to destroy Janus room")
+    end
+
+    it "returns 502 on RoomDeletionError due to RedisError rescue" do
+      room = RoomService::Models::AppRoom.new(
+        room_code: "KOL1234",
+        janus_room_id: 0101
+      )
+      repo.save(room)
+      allow(fake_janus)
+        .to receive(:destroy_janus_room)
+        .with(0101)
+        .and_return(nil)
+      allow(repo)
+        .to receive(:delete)
+        .with(room.room_code)
+        .and_raise(RoomService::Errors::RedisError, "Failed to remove from redis")
+
+      post "/api/v1/rooms/delete/KOL1234"
+      expect(last_response.status).to eq(502)
+      json = JSON.parse(last_response.body)
+      expect(json["error"]).to eq("Failed to delete room: Failed to remove from redis")
+    end
+
+
     it "returns validation error JSON on invalid request payload" do
       manager = RoomService::Routes::RoomRoutes.manager
       allow(manager).to receive(:destroy_room)
