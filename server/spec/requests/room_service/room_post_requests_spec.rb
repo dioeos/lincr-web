@@ -1,6 +1,12 @@
+require "dotenv/load"
 require_relative "../../spec_helper"
 
 RSpec.describe "Post", type: :request do
+  let(:redis) { Redis.new(url: ENV["REDIS_URL"])}
+  
+  before do
+    redis.flushdb
+  end
   describe "POST /rooms/create" do
     let(:fake_janus) do
       instance_double(RoomService::Clients::JanusClient)
