@@ -1,6 +1,13 @@
+require "dotenv/load"
 require_relative "../../spec_helper"
 
 RSpec.describe "Get", type: :request do
+  let(:redis) { Redis.new(url: ENV["REDIS_URL"])}
+
+  before do
+    redis.flushdb
+  end
+
   describe "GET /rooms/list" do
     it "returns all rooms as JSON" do
       repo = RoomService::Repositories::RoomRepository.new
@@ -19,6 +26,13 @@ RSpec.describe "Get", type: :request do
           "janus_room_id" => 1234
         )
       )
+    end
+
+    it "returns empty JSON when no rooms exist" do
+      get "/api/v1/rooms/list"
+      expect(last_response.status).to eq(200)
+      json = JSON.parse(last_response.body)
+      expect(json["rooms"]).to be_empty
     end
   end
 
@@ -39,6 +53,15 @@ RSpec.describe "Get", type: :request do
           "room_code" => "BCD1234",
           "janus_room_id" => 6789
         }
+      )
+    end
+
+    it "returns 404 error on non-existing room" do
+      get "/api/v1/rooms/BCK1234"
+      expect(last_response.status).to eq(404)
+      json = JSON.parse(last_response.body)
+      expect(json).to eq(
+        "error" => "Room BCK1234 not found"
       )
     end
   end
