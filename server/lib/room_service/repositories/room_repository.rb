@@ -21,7 +21,12 @@ module RoomService
       end
 
       def find(room_code)
-        id = @redis.hget("rooms", room_code)
+        begin
+          id = @redis.hget("rooms", room_code)
+        rescue Redis::BaseError => e
+          raise Errors::RedisError, "Failed to find room in repository: #{e.message}"
+        end
+
         return nil unless id
 
         Models::AppRoom.new(
@@ -39,11 +44,15 @@ module RoomService
       end
 
       def all
-        @redis.hgetall("rooms").map do |code, id|
-          Models::AppRoom.new(
-            room_code: code,
-            janus_room_id: Integer(id, 10)
-          )
+        begin
+          @redis.hgetall("rooms").map do |code, id|
+            Models::AppRoom.new(
+              room_code: code,
+              janus_room_id: Integer(id, 10)
+            )
+          end
+        rescue Redis::BaseError => e
+          raise Errors::RedisError, "Failed to list all rooms from repository: #{e.message}"
         end
       end
 

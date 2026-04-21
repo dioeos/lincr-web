@@ -57,15 +57,31 @@ module RoomService
           rooms = self.class.manager.list_rooms
           response.status = 200
           { rooms: rooms.map(&:to_h) }
+        rescue Errors::RoomListError => e
+          r.response.status = 502
+          { error: e.message }
         end
 
         r.on String do |room_code|
           # GET /rooms/:room_code
           r.get true do
+            result = RoomService::Validation::RoomCodeSchema.call(room_code: room_code)
+            unless result.success?
+              r.response.status = 422
+              next({
+                error: {
+                  type: "Validation Error",
+                  fields: result.errors.to_h
+                }
+              })
+            end
             room = self.class.manager.get_room(room_code)
             room.to_h
           rescue Errors::RoomNotFoundError => e
             r.response.status = 404
+            { error: e.message }
+          rescue Errors::RoomFindError => e
+            r.response.status = 502
             { error: e.message }
           end
         end
