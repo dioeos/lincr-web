@@ -12,10 +12,12 @@
   "dependencies": {
     "@tailwindcss/vite": "^4.2.2",
     "axios": "^1.13.6",
+    "janus-gateway": "^1.4.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-router": "^7.13.1",
-    "tailwindcss": "^4.2.2"
+    "tailwindcss": "^4.2.2",
+    "webrtc-adapter": "^9.0.4"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
