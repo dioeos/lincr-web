@@ -7,7 +7,7 @@ export default function Index() {
         <a className="no-underline font-geist-light" href="/host">
           Host a Room
         </a>
-        <a className="no-underline font-geist-light" href="#">
+        <a className="no-underline font-geist-light" href="/join">
           Join a Room
         </a>
       </div>
