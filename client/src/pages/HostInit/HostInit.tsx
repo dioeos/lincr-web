@@ -1,13 +1,8 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
-// import type { AxiosError } from "axios";
+import type { Room } from "../../types/room";
 
 import api from "../../utils/api/api";
-
-type CreateRoomSuccess = {
-  room_code: string;
-  janus_room_id: number;
-};
 
 export default function HostInit() {
   const navigate = useNavigate();
@@ -15,7 +10,7 @@ export default function HostInit() {
     let cancelled = false;
     const run = async () => {
       try {
-        const response = await api.post<CreateRoomSuccess>("rooms/create");
+        const response = await api.post<Room>("rooms/create");
         const code: string = response.data.room_code;
 
         if (cancelled) return;
