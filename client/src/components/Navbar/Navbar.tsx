@@ -1,13 +1,13 @@
+import type { Navbarlink } from "../../types/navbarlink";
+
 import { Link } from "react-router";
 
-const links = [
-  { title: "About", href: "/" },
-  { title: "Sign Up", href: "/" },
-  { title: "Docs", href: "/" },
-  { title: "Discord", href: "/" },
-];
+type NavbarProps = {
+  links: Navbarlink[];
+};
 
-export default function Navbar() {
+export default function Navbar(props: NavbarProps) {
+  const { links } = props;
   return (
     <div id="nav-wrapper" className="">
       <nav className="font-geist-light uppercase text-xs">

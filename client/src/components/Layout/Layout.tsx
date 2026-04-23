@@ -1,9 +1,17 @@
 import type { ReactNode } from "react";
+import type { Navbarlink } from "../../types/navbarlink";
 import Navbar from "../Navbar/Navbar";
 
-interface LayoutProps {
+type LayoutProps = {
   children: ReactNode;
-}
+};
+
+const links: Navbarlink[] = [
+  { title: "About", href: "/" },
+  { title: "Sign Up", href: "/" },
+  { title: "Docs", href: "/" },
+  { title: "Discord", href: "/" },
+];
 
 const Layout = ({ children }: LayoutProps) => {
   return (
@@ -12,7 +20,7 @@ const Layout = ({ children }: LayoutProps) => {
 
       <div className="flex">
         <div className="flex flex-col w-full">
-          <Navbar />
+          <Navbar links={links} />
           <main className="flex items-center justify-center px-4 py-8 md:px-8 md:py-12">
             {children}
           </main>
