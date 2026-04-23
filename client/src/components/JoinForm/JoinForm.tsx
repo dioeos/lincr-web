@@ -1,16 +1,13 @@
 import React from "react";
 
-interface JoinFormProps {
+type JoinFormProps = {
   code: string;
   setCode: React.Dispatch<React.SetStateAction<string>>;
   handleSubmit: React.SubmitEventHandler<HTMLFormElement>;
-}
+};
 
-export default function JoinForm({
-  code,
-  setCode,
-  handleSubmit,
-}: JoinFormProps) {
+export default function JoinForm(props: JoinFormProps) {
+  const { code, setCode, handleSubmit } = props;
   return (
     <div>
       <form onSubmit={handleSubmit}>
