@@ -22,7 +22,7 @@ describe RoomService::Clients::JanusClient do
 
       allow(internet).to receive(:post).and_return(response)
       allow(response).to receive(:status)
-        .and_return(instance_double("HTTPStatus", success?: true))
+        .and_return(200)
 
       allow(response).to receive(:read).and_return(
         { "janus" => "success", "data" => { "id" => 123 } }.to_json
@@ -48,14 +48,13 @@ describe RoomService::Clients::JanusClient do
         "janus" => "create",
         "transaction" => "abc"
       }
-      failed_status = instance_double("HTTPStatus", success?: false)
       allow(internet).to receive(:post).and_return(response)
       allow(response).to receive(:status)
-        .and_return(failed_status)
+        .and_return(500)
       allow(response).to receive(:close)
       expect {
         client.post("http://janus.test/janus", payload)
-      }.to raise_error(RoomService::Errors::JanusError, "HTTP error: #{failed_status}")
+      }.to raise_error(RoomService::Errors::JanusError, "HTTP error: 500")
       expect(response).to have_received(:close)
 end
 
@@ -66,7 +65,7 @@ end
       }
       allow(internet).to receive(:post).and_return(response)
       allow(response).to receive(:status)
-        .and_return(instance_double("HTTPStatus", success?: true))
+        .and_return(200)
       allow(response).to receive(:read).and_return(
         {
           "janus" => "error",
@@ -92,7 +91,7 @@ end
         .and_return(response)
 
       allow(response).to receive(:status)
-        .and_return(instance_double("HTTPStatus", success?: true))
+        .and_return(200)
 
       allow(response).to receive(:read).and_return(
         {
@@ -110,30 +109,28 @@ end
     end
 
     it "raises JanusError when HTTP GET status is not successful" do
-      failed_status = instance_double("HTTPStatus", success?: false)
       allow(internet).to receive(:get)
         .with("http://janus.test/janus/info")
         .and_return(response)
 
       allow(response).to receive(:status)
-        .and_return(failed_status)
+        .and_return(500)
       allow(response).to receive(:close)
 
       expect {
         client.get("http://janus.test/janus/info")
-      }.to raise_error(RoomService::Errors::JanusError, "HTTP error: #{failed_status}")
+      }.to raise_error(RoomService::Errors::JanusError, "HTTP error: 500")
 
       expect(response).to have_received(:close)
     end
 
 
     it "raises JanusError when returned response has janus => error" do
-      successful_status = instance_double("HTTPStatus", success?: true)
       allow(internet).to receive(:get)
         .with("http://janus.test/janus/info")
         .and_return(response)
       allow(response).to receive(:status)
-        .and_return(successful_status)
+        .and_return(200)
       allow(response).to receive(:read).and_return(
         {
           "janus" => "error",

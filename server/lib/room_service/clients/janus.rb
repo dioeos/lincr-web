@@ -40,7 +40,7 @@ module RoomService
         body = JSON.dump(payload)
         resp = internet.post(url, headers, body)
 
-        unless resp.status.success?
+        unless (200..299).cover?(resp.status)
           raise RoomService::Errors::JanusError, "HTTP error: #{resp.status}"
         end
 
@@ -55,7 +55,7 @@ module RoomService
 
       def get(url)
         resp = internet.get(url)
-        unless resp.status.success?
+        unless (200..299).cover?(resp.status)
           raise RoomService::Errors::JanusError, "HTTP error: #{resp.status}"
         end
 
