@@ -16,7 +16,7 @@ export default function HostInit() {
         if (cancelled) return;
         navigate(`/room/${code}`, {
           state: {
-            janus_room_id: response.data.janus_room_id,
+            janusRoomId: response.data.janus_room_id,
             role: "host",
           },
           replace: true,
