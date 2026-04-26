@@ -1,10 +1,5 @@
 import type { JanusJS } from "janus-gateway";
 
-type PublisherInfo = {
-  id?: number;
-  display?: string;
-};
-
 type StartPublisherArgs = {
   janusRoomId: number;
   onLocalStream?: (stream: MediaStream) => void;
@@ -18,7 +13,6 @@ type PublisherMessageArgs = {
 };
 
 type PublisherOfferArgs = {
-  resolve: () => void;
   reject: (err: any) => void;
 };
 
@@ -87,7 +81,7 @@ export class JanusPublisher {
     const event = msg?.videoroom;
 
     if (event === "joined") {
-      this.createPublisherOffer({ resolve, reject });
+      this.createPublisherOffer({ reject });
       return;
     }
 
@@ -97,11 +91,12 @@ export class JanusPublisher {
 
     if (jsep) {
       this.publisherHandle.handleRemoteJsep({ jsep });
+      resolve();
     }
   }
 
   private createPublisherOffer(args: PublisherOfferArgs): void {
-    const { resolve, reject } = args;
+    const { reject } = args;
 
     this.publisherHandle.createOffer({
       tracks: [
@@ -117,7 +112,6 @@ export class JanusPublisher {
           },
           jsep: offerJsep,
         });
-        resolve();
       },
       error: (err: unknown) => reject(err),
     });
