@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import type { LocationState } from "../../types/locationState";
 
 import { useLocation } from "react-router";
@@ -11,6 +11,8 @@ export default function VideoRoom() {
 
   const janusRoomId = state?.janusRoomId;
   const videoRoomRole = state?.role;
+
+  const localVideoRef = useRef<HTMLVideoElement | null>(null);
 
   useEffect(() => {
     if (!janusRoomId) {
@@ -36,6 +38,12 @@ export default function VideoRoom() {
         if (videoRoomRole === "host") {
           await client.startPublisher({
             janusRoomId: janusRoomId,
+            onLocalStream: (stream: MediaStream) => {
+              if (!localVideoRef.current) return;
+              if (localVideoRef.current.srcObject !== stream) {
+                localVideoRef.current.srcObject = stream;
+              }
+            },
           });
         }
       } catch (err) {}
@@ -52,6 +60,15 @@ export default function VideoRoom() {
     <div>
       <h1>Video Room</h1>
       <span>Room ID:</span> {janusRoomId ?? "Missing"}
+      {videoRoomRole === "host" && (
+        <video
+          ref={localVideoRef}
+          autoPlay
+          playsInline
+          muted
+          className="w-full max-w-xl rounded-lg bg-black"
+        />
+      )}
     </div>
   );
 }

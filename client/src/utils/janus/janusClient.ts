@@ -9,6 +9,7 @@ const janusSecret = import.meta.env.VITE_JANUS_API_SECRET;
 type StartPublisherArgs = {
   janusRoomId: number;
   // onPublisherJoined: (publishers: PublisherInfo[])
+  onLocalStream?: (stream: MediaStream) => void;
 };
 
 type PublisherMessageArgs = {
@@ -68,7 +69,7 @@ export class JanusClient {
   }
 
   async startPublisher(args: StartPublisherArgs) {
-    const { janusRoomId } = args;
+    const { janusRoomId, onLocalStream } = args;
     const localStream = new MediaStream();
 
     await new Promise<void>((resolve, reject) => {
@@ -101,6 +102,8 @@ export class JanusClient {
           if (!alreadyExists) {
             localStream.addTrack(track);
           }
+
+          onLocalStream?.(localStream);
         },
 
         oncleanup: () => {},
