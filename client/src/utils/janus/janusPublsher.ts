@@ -39,14 +39,14 @@ export class JanusPublisher {
         plugin: "janus.plugin.videoroom",
         opaqueId: this.opaqueId,
 
-        success: (pluginHandle: any) => {
+        success: (pluginHandle: JanusJS.PluginHandle) => {
           this.publisherHandle = pluginHandle;
           this.joinRoom(janusRoomId);
         },
 
         error: (err: any) => reject(err),
 
-        onmessage: (msg: any, jsep: JanusJS.JSEP) => {
+        onmessage: (msg: JanusJS.Message, jsep: JanusJS.JSEP) => {
           this.handleMessage({
             msg: msg,
             jsep: jsep,
