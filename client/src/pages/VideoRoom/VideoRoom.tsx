@@ -1,9 +1,9 @@
 import { useEffect, useRef } from "react";
+import { useLocation } from "react-router";
 import type { LocationState } from "../../types/locationState";
 
-import { useLocation } from "react-router";
-
 import { JanusClient } from "../../utils/janus/janusClient";
+import { JanusPublisher } from "../../utils/janus/janusPublsher";
 
 export default function VideoRoom() {
   const location = useLocation();
@@ -13,6 +13,7 @@ export default function VideoRoom() {
   const videoRoomRole = state?.role;
 
   const localVideoRef = useRef<HTMLVideoElement | null>(null);
+  const janusClientRef = useRef<JanusClient | null>(null);
 
   useEffect(() => {
     if (!janusRoomId) {
@@ -28,6 +29,7 @@ export default function VideoRoom() {
     const start = async () => {
       try {
         const client = new JanusClient();
+        janusClientRef.current = client;
 
         await client.init();
         if (cancelled) return;
@@ -36,7 +38,9 @@ export default function VideoRoom() {
         if (cancelled) return;
 
         if (videoRoomRole === "host") {
-          await client.startPublisher({
+          const publisher = new JanusPublisher(client.getSession());
+
+          await publisher.start({
             janusRoomId: janusRoomId,
             onLocalStream: (stream: MediaStream) => {
               if (!localVideoRef.current) return;
@@ -53,6 +57,8 @@ export default function VideoRoom() {
 
     return () => {
       cancelled = true;
+      janusClientRef.current?.cleanupSession();
+      janusClientRef.current = null;
     };
   }, [janusRoomId, videoRoomRole]);
 
