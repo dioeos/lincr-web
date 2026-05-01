@@ -49,6 +49,12 @@ export default function VideoRoom() {
               }
             },
           });
+        } else if (videoRoomRole === "guest") {
+          // const subscriber = new JanusSubscriber(client.getSession());
+          //
+          // await subscriber.start({
+          //   janusRoomId,
+          // })
         }
       } catch (err) {}
     };
